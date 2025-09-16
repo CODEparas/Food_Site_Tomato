@@ -23,7 +23,11 @@ const foodSchema = new mongoose.Schema({
     },
     image : {
         type : String,
-        
+
     }
     }
 ,{timestamps: true})
+
+const Food = mongoose.model("Food", foodSchema);
+
+export default Food;
