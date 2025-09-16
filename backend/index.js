@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import {PORT, NODE_ENV} from "./config/env.js"
+import connectDB from "./config/db.js";
 
 
 
@@ -24,7 +25,7 @@ app.get('/', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    
+    connectDB();
   console.log(`Server is running on http://localhost:${PORT} in ${process.env.NODE_ENV} mode`);
 });
 
