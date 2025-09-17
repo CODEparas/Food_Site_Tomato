@@ -73,3 +73,31 @@ export const getAllfood = async (req,res,next) =>{
         next(error);
     }
 }
+
+export const foodItem = async (req,res,next) =>{
+    try {
+        const foodId = req.params.foodId;
+
+        const food = await Food.findById(foodId);
+        if(!food){
+            const error = new Error("No item found with this id");
+            error.statusCode = 403;
+            throw error;
+            return;
+        }
+
+        res.status(200).json({
+            success : true,
+            message: "Food item fetched",
+            data : {
+                food
+            }
+        })
+
+        
+    } catch {
+        next(error);
+        
+    }
+
+}
