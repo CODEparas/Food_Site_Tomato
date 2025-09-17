@@ -1,12 +1,10 @@
 import { Router } from "express";   
-import { addFood } from "../controllers/food.controllers.js";
+import { addFood, getAllfood } from "../controllers/food.controllers.js";
 
 const foodRouter = Router();
 
 // Define order-related routes here
-foodRouter.get('/', (req, res) => {
-  res.send('Order route');
-});
+foodRouter.get('/', getAllfood);
 
 foodRouter.post('/create', addFood);
 

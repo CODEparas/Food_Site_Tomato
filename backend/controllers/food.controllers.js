@@ -46,3 +46,30 @@ export const addFood = async (req ,res , next)=>{
     }
 
 }
+
+export const getAllfood = async (req,res,next) =>{
+    try {
+        
+        const foodItems = await Food.find();
+        if(!foodItems){
+            const error = new Error("No food item added");
+            error.statusCode = 400;
+            throw error;{
+            return;
+        }
+    }
+        res.status(200).json({
+            success : true,
+            message : " All food items fetched",
+            data : {
+                foodItems
+            }
+        });
+
+    
+
+
+    } catch (error) {
+        next(error);
+    }
+}
