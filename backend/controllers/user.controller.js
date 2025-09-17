@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/users.model.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import {JWT_EXPIRE, JWT_SECRET} from "../config/env.js";
 
 export const signupUser = async (req , res, next) =>{
@@ -66,6 +67,56 @@ export const getAllUsers = async (req , res,next) =>{
             }
         });
         
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const loginUser = async (req , res, next) =>{
+    try {
+        const {email, password} = req.body;
+        if(!email || !password){
+            const error = new Error("Please provide email and password both");
+            error.statusCode = 400;
+            throw error;
+            return;
+        }
+        const user = await User.findOne({email});
+        
+
+        if(!user){
+            const error = new Error("User not found with this email");
+            error.statusCode = 403;
+            throw error;
+            return;
+        }
+
+        const isPasswordcorrect = await bcrypt.compare(password, user.password);
+        if(!isPasswordcorrect){
+            const error = new Error("Incorrect password");
+            error.statusCode = 403;
+            throw error;
+            return;
+        }
+
+        const token = await jwt.sign({userId:user._id}, JWT_SECRET, {expiresIn : JWT_EXPIRE});
+        if(!token){
+            const error = new Error("Error in token generation");
+            error.statusCode = 403;
+            throw error;
+            return;
+        }
+
+        res.status(200).json({
+            success : true,
+            message : "user signed in",
+            data : {
+                user,
+                token
+            }
+        })
+
+
     } catch (error) {
         next(error);
     }

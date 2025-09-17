@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { signupUser, getAllUsers } from "../controllers/user.controller.js";
+import { signupUser, getAllUsers, loginUser } from "../controllers/user.controller.js";
 
 const userRouter = Router();
 
@@ -8,10 +8,8 @@ userRouter.get('/',getAllUsers);
 
 userRouter.post('/register', signupUser);
 
-userRouter.post('/login', (req, res) => {
-  // Login logic here
-  res.send('User login');
-}); 
+userRouter.post('/login', loginUser);
+
 
 
 export default userRouter;
