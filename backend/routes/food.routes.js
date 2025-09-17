@@ -1,20 +1,13 @@
 import { Router } from "express";   
+import { addFood, foodItem, getAllfood } from "../controllers/food.controllers.js";
 
-const orderRouter = Router();
+const foodRouter = Router();
 
 // Define order-related routes here
-orderRouter.get('/', (req, res) => {
-  res.send('Order route');
-});
+foodRouter.get('/', getAllfood);
 
-orderRouter.post('/create', (req, res) => {
-  // Order creation logic here
-  res.send('Create order');
-});
+foodRouter.post('/create', addFood);
 
-orderRouter.get('/:orderId', (req, res) => {
-  // Get order details logic here
-  res.send(`Get order with ID: ${req.params.orderId}`);
-});
+foodRouter.get('/:foodId', foodItem);
 
-export default orderRouter;
+export default foodRouter;
