@@ -2,30 +2,13 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 
-const CartItem = new mongoose.Schema({
-  productId: {
-    type: Schema.Types.ObjectId,
-    ref: "Product",        
-    required: true
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1
-  },
-}, { _id: false });
+
 
 const userSchema = new mongoose.Schema({
     name : {
         type : String,
         required : true,
         trim : true,
-    },
-    username : {
-        type : String,
-        required : true,
-        unique : true,
-        trim : true
     },
     email : {
         type: String,
@@ -42,8 +25,7 @@ const userSchema = new mongoose.Schema({
         maxlength : 20,
 
 
-    },
-    cartData : [CartItem]
+    }
 }, {timestamps: true});
 
 
