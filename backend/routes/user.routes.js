@@ -1,23 +1,20 @@
 import { Router } from "express";
+import { signupUser, getAllUsers, loginUser } from "../controllers/user.controller.js";
 
 const userRouter = Router();
 
 // Define user-related routes here
-userRouter.get('/', (req, res) => {
-  res.send('User route');
-});
+userRouter.get('/',getAllUsers);
 
-userRouter.post('/register', (req, res) => {
-  // Registration logic here
-  res.send('User registration');
-});
+userRouter.post('/register', signupUser);
 
-userRouter.post('/login', (req, res) => {
-  // Login logic here
-  res.send('User login');
-}); 
+userRouter.post('/login', loginUser);
+
 
 
 export default userRouter;
 
-// You can add more routes like POST, PUT, DELETE for user operations
+userRouter.get('/:userId', (req, res) => {
+  // Get user details logic here
+  res.send(`Get user with ID: ${req.params.userId}`);
+});
