@@ -1,9 +1,10 @@
 import { Router } from "express";   
 
+
 const orderRouter = Router();
 
 // Define order-related routes here
-orderRouter.get('/', (req, res) => {
+orderRouter.get('/list', (req, res) => {
   res.send('Order route');
 });
 
