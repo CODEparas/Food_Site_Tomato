@@ -1,11 +1,22 @@
 import Order from "../models/oders.model.js";
 import mongoose from "mongoose";
 import User from "../models/users.model.js";
+
+
 export const getAllorder = async (req , res , next) =>{
     try {
+
+        const Allorder = await Order.find();
+        res.status(200).json({
+            success: true,
+            message : "fetched all orders",
+            data : {
+                Allorder
+            }
+        })
         
     } catch (error) {
-        
+        next(error);
     }
 }
 
@@ -60,16 +71,37 @@ export const createOrder = async (req,res,next)=>{
         next(error);
     }
     finally{
-        session.endSession();
+        await session.endSession();
 
     }
 }
 
 export const UserOrder = async(req,res,next) =>{
     try {
+        const userID = req.user._id;
+        const orders = await Order.findById(userID);
+        if(!userID){
+            const error = new Error("Please log in to see ur orders");
+            error.statusCode = 401;
+            throw error;
+        }
+        if(!orders){
+            const error = new Error("No orders yet");
+            error.statusCode = 400;
+            throw error;
+        }
+
+        res.status(200).json({
+            success: true,
+            message:"Fetched order details",
+            data : {
+
+                orders
+            }
+        })
         
     } catch (error) {
-        
+        next(error);
     }
 }
 
