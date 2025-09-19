@@ -1,21 +1,18 @@
 import { Router } from "express";   
+import { getAllorder, UserOrder,createOrder, updateOrderStatusById } from "../controllers/order.controller";  
+import { get } from "mongoose";
+
 
 
 const orderRouter = Router();
 
 // Define order-related routes here
-orderRouter.get('/list', (req, res) => {
-  res.send('Order route');
-});
+orderRouter.get('/list', getAllorder);
 
-orderRouter.post('/create', (req, res) => {
-  // Order creation logic here
-  res.send('Create order');
-});
+orderRouter.post('/create', createOrder);
 
-orderRouter.get('/:orderId', (req, res) => {
-  // Get order details logic here
-  res.send(`Get order with ID: ${req.params.orderId}`);
-});
+orderRouter.get('/:userId', UserOrder);
+
+orderRouter.put('/:orderId', updateOrderStatusById);
 
 export default orderRouter;

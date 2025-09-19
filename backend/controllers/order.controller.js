@@ -119,13 +119,6 @@ export const UserOrder = async(req,res,next) =>{
     }
 }
 
-export const updateOrderStatus = async(req,res,next)=>{
-    try {
-        
-    } catch (error) {
-        
-    }
-}
 
 export const updateOrderStatusById = async (req, res, next) => {
     try {
@@ -150,38 +143,6 @@ export const updateOrderStatusById = async (req, res, next) => {
             data: order
         });
 
-    } catch (error) {
-        next(error);
-    }
-}
-export const getCartByUserId = async (req, res, next) => {
-    try {
-        const userID = req.user._id;
-        if(!userID){
-            const error = new Error("Please log in to see the cart");
-            error.statusCode = 401;
-            throw error;
-        }
-
-        const user = await User.findById(userID);
-        if(!user){
-            const error = new Error("User not found");   
-            error.statusCode = 404;
-            throw error;
-        }
-
-        const cart = await Cart.findOne({ userId: userID });
-        if (!cart) {
-            const error = new Error("Cart not found");
-            error.statusCode = 404;
-            throw error;
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Fetched cart successfully",
-            data: cart
-        });
     } catch (error) {
         next(error);
     }
