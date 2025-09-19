@@ -34,3 +34,41 @@ const getCart = async (req , res, next)=>{
 }
 
 
+
+export const addItemToCart = async (req, res, next) => {
+    const userId = req.user._id;
+    const { productId, quantity } = req.body;
+
+    if (!productId || !quantity || quantity <= 0) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Invalid request. Please provide a valid productId and a quantity greater than 0." 
+        });
+    }
+
+    try {
+        let cart = await Cart.findOne({ userId: userId });
+
+        if (cart) {
+            const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+
+            if (itemIndex > -1) {
+                cart.items[itemIndex].quantity += quantity;
+            } else {
+                cart.items.push({ productId, quantity });
+            }
+            
+            const updatedCart = await cart.save();
+            return res.status(200).json({ success: true, message: "Cart updated.", data: updatedCart });
+
+        } else {
+            const newCart = await Cart.create({
+                userId,
+                items: [{ productId, quantity }]
+            });
+            return res.status(201).json({ success: true, message: "Cart created and item added.", data: newCart });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
