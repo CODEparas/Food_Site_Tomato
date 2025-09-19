@@ -127,3 +127,62 @@ export const updateOrderStatus = async(req,res,next)=>{
     }
 }
 
+export const updateOrderStatusById = async (req, res, next) => {
+    try {
+        const orderId = req.params.orderId;
+        const { status } = req.body;
+
+        if (!["BOOKED", "DELIVERED", "CANCELLED", "PROCESSING"].includes(status)) {
+            return res.status(400).json({ success: false, message: "Invalid status value." });
+        }
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found." });
+        }
+
+        order.status = status;
+        await order.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Order status updated successfully.",
+            data: order
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}
+export const getCartByUserId = async (req, res, next) => {
+    try {
+        const userID = req.user._id;
+        if(!userID){
+            const error = new Error("Please log in to see the cart");
+            error.statusCode = 401;
+            throw error;
+        }
+
+        const user = await User.findById(userID);
+        if(!user){
+            const error = new Error("User not found");   
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const cart = await Cart.findOne({ userId: userID });
+        if (!cart) {
+            const error = new Error("Cart not found");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Fetched cart successfully",
+            data: cart
+        });
+    } catch (error) {
+        next(error);
+    }
+}
