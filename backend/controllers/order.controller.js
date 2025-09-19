@@ -78,25 +78,6 @@ export const createOrder = async (req,res,next)=>{
             data: newOrder[0]
         });
 
-
-
-
-    
-
-        await User.findByIdAndUpdate(userID, {$push : {orders : order[0]._id}}, {new : true, session}); 
-        await User.findByIdAndUpdate(userID, {cart : []}, {new : true, session});
-
-        await session.commitTransaction();
-        
-        res.status(201).json({
-            success : true,
-            message : "Order placed successfully",
-            data : {
-                user,
-                order
-            }
-        })
-
         
     } catch (error) {
         await session.abortTransaction();
