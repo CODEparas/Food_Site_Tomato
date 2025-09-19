@@ -1,7 +1,8 @@
 import Order from "../models/oders.model.js";
 import mongoose from "mongoose";
 import User from "../models/users.model.js";
-
+import Cart from "../models/cart.model.js";
+import Product from "../models/product.model.js";
 
 export const getAllorder = async (req , res , next) =>{
     try {
@@ -23,32 +24,64 @@ export const getAllorder = async (req , res , next) =>{
 export const createOrder = async (req,res,next)=>{
     const session = await mongoose.startSession();
     session.startTransaction();
-    try {
-        const {items, address} = req.body;
-        const userID = req.user._id;
+    
+         try {
+        const userId = req.user._id;
+        const { address } = req.body;
 
-        if(!items){
-            const error = new Error("No items in cart to order");
-            error.statusCode = 403;
-            throw error;
-        }
-        if(!address){
-            const error = new Error("Please add address");
-            error.statusCode = 403;
-            throw error;
-        }
-        const user = req.user;
-        if(!user){
-            const error = new Error("User not found");
-            error.statusCode = 404;
-            throw error;
+        if (!address) {
+            return res.status(400).json({ success: false, message: "Address is required." });
         }
 
-        const order = await Order.create([{
-            userID,
-            items,
-            address
-        }], {session});
+        const cart = await Cart.findOne({ userId: userId }).session(session);
+
+        if (!cart || cart.items.length === 0) {
+            await session.abortTransaction();
+            return res.status(400).json({ success: false, message: "Cannot create order from an empty cart." });
+        }
+
+        const orderItems = [];
+        let totalAmount = 0;
+
+        for (const cartItem of cart.items) {
+            const product = await Product.findById(cartItem.productId).session(session);
+            if (!product) {
+                throw new Error(`Product with ID ${cartItem.productId} not found.`);
+            }
+
+            orderItems.push({
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: cartItem.quantity,
+            });
+
+            totalAmount += product.price * cartItem.quantity;
+        }
+
+        const newOrder = await Order.create([{
+            userId,
+            items: orderItems,
+            address: address,
+            totalAmount: totalAmount,
+        }], { session });
+
+        cart.items = [];
+        await cart.save({ session });
+        
+
+        await session.commitTransaction();
+
+        return res.status(201).json({
+            success: true,
+            message: "Order placed successfully!",
+            data: newOrder[0]
+        });
+
+
+
+
+    
 
         await User.findByIdAndUpdate(userID, {$push : {orders : order[0]._id}}, {new : true, session}); 
         await User.findByIdAndUpdate(userID, {cart : []}, {new : true, session});
