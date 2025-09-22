@@ -1,20 +1,15 @@
 import { Router } from "express";   
+import {getCart, addItemToCart, removeItemFromCart} from "../controllers/cart.controllers.js";
+import authorize from "../middlewares/auth.middlewares.js";
 
 const orderRouter = Router();
 
-// Define order-related routes here
-orderRouter.get('/', (req, res) => {
-  res.send('Order route');
-});
 
-orderRouter.post('/create', (req, res) => {
-  // Order creation logic here
-  res.send('Create order');
-});
 
-orderRouter.get('/:orderId', (req, res) => {
-  // Get order details logic here
-  res.send(`Get order with ID: ${req.params.orderId}`);
-});
+orderRouter.post('/addtoCart', authorize, addItemToCart);
+
+orderRouter.get('/getCart', authorize, getCart);
+
+orderRouter.post("/remove", authorize, removeItemFromCart);
 
 export default orderRouter;

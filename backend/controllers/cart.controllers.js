@@ -1,7 +1,7 @@
 import Cart from "../models/cart.model.js";
 import Order from "../models/oders.model.js";
 
-const getCart = async (req , res, next)=>{
+export const getCart = async (req , res, next)=>{
     try {
         const userID = req.user._id;
         if(!userID){
