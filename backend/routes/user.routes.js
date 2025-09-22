@@ -1,20 +1,19 @@
 import { Router } from "express";
-import { signupUser, getAllUsers, loginUser } from "../controllers/user.controller.js";
+import { signupUser, getAllUsers, loginUser, getUserById } from "../controllers/user.controller.js";
+import authorize from "../middlewares/auth.middlewares.js";
 
 const userRouter = Router();
 
 // Define user-related routes here
-userRouter.get('/',getAllUsers);
+userRouter.get('/', authorize ,getAllUsers);
 
 userRouter.post('/register', signupUser);
 
 userRouter.post('/login', loginUser);
 
+userRouter.get('/:userId', authorize, getUserById);
+
 
 
 export default userRouter;
 
-userRouter.get('/:userId', (req, res) => {
-  // Get user details logic here
-  res.send(`Get user with ID: ${req.params.userId}`);
-});
