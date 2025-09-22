@@ -122,3 +122,27 @@ export const loginUser = async (req , res, next) =>{
     }
 }
 
+export const getUserById = async(req , res, next)=>{
+    try {
+
+        const userId = req.params.userId;
+        const user = await User.findById(userId);
+        if(!user){
+            const error = new Error("No user found with this id");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        res.status(200).json({
+            success : true,
+            message : "user fetched",
+            data : {
+                user
+            }
+        })  
+        
+    } catch (error) {
+        
+    }
+}
+

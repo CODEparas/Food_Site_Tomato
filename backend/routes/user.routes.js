@@ -10,11 +10,11 @@ userRouter.post('/register', signupUser);
 
 userRouter.post('/login', loginUser);
 
+userRouter.get('/:userId', (req, res) => {
+  res.send(`Get user with ID: ${req.params.userId}`);
+});
+
 
 
 export default userRouter;
 
-userRouter.get('/:userId', (req, res) => {
-  // Get user details logic here
-  res.send(`Get user with ID: ${req.params.userId}`);
-});
