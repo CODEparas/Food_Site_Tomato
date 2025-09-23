@@ -21,6 +21,29 @@ export const getAllorder = async (req , res , next) =>{
     }
 }
 
+
+export const getOrderById = async (req,res,next) =>{
+    try {
+        const orderId = req.params.orderId;
+        const order = await Order.findById(orderId);
+        if(!order){
+            const error = new Error("Order not found");
+            error.statusCode = 404;
+            throw error;
+        }
+        res.status(200).json({
+            success: true,
+            message: "Fetched order details",
+            data : {
+                order
+            }
+        })
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const createOrder = async (req,res,next)=>{
     const session = await mongoose.startSession();
     session.startTransaction();
